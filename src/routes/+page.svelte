@@ -1,33 +1,37 @@
 <script lang="ts">
-	import Nested from './nested.svelte';
-	let state = {
-		firstName: '',
-		lastName: ''
-	};
-
-	$: fullName = state.firstName && state.lastName ? true : false;
-
-	function handleChange(e: Event & { currentTarget: EventTarget & HTMLInputElement }) {
-		const { value } = e.currentTarget;
-		state[e.currentTarget.name as keyof typeof state] = value;
+	import Outer from './Outer.svelte';
+	const colors = ['red', 'green', 'yellow', 'blue', 'deeppink'] as const;
+	let secret = '';
+	let selected: (typeof colors)[number] = colors[0];
+	function eventHandler(e: CustomEvent<{ secret: string }>) {
+		secret = e.detail.secret;
+	}
+	function handleClick() {
+		console.log('Event forwarded to nested!');
 	}
 </script>
 
-<pre class="state">{JSON.stringify(state)}</pre>
-
-{#each Object.entries(state) as [key, value]}
-	<label for={key}>
-		{key}:<input name={key} id={key} {value} on:input={handleChange} />
-	</label>
+{#each colors as color}
+	<button
+		style="background-color:{color}"
+		on:click={() => (selected = color)}
+		aria-label={color}
+		aria-current={color === selected}
+	/>
 {/each}
-	<svelte:component this={Nested} {fullName} name={'hfeiow'} />
+
+<p>selected color is: <strong style="color:{selected}">{selected}</strong></p>
+<Outer on:message={eventHandler} on:click={handleClick} />
+
+<h3>secret:{secret}</h3>
 
 <style>
-	.state {
-		text-align: center;
-		font-size: 2em;
-	}
-	input {
+	button {
+		width: 100px;
+		height: 100px;
+		border: none;
+		margin-block: 1rem;
+		border-radius: 8px;
 		display: block;
 	}
 </style>
