@@ -11,6 +11,11 @@
 	}
 </script>
 
+<nav>
+	<a href="/demo">Demo</a>
+	<a href="/bind">Bind</a>
+</nav>
+
 {#each colors as color}
 	<button
 		style="background-color:{color}"
@@ -33,5 +38,9 @@
 		margin-block: 1rem;
 		border-radius: 8px;
 		display: block;
+	}
+	a {
+		color: green;
+		font-size: 3rem;
 	}
 </style>
